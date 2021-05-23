@@ -1,0 +1,411 @@
+{
+	"info": {
+		"_postman_id": "e913c315-207c-441a-84ee-2495d2907f23",
+		"name": "basic sripts & variables & docs",
+		"description": "# memo\n- collectionメニューからrun collection\n- →結果の各行をクリックでbodyなどを見れる\n\n## 変数・environment\n- global < environment < data < local が優先（同じkey名のとき)\n※dataはrunnerでiteration使うときだけ\n\n- initial valueはteamにshareされるので、token等はcurrent valueのみに記載する\n\n### url\nget {{url}}/api/users\npm.variables.get('url')\n\n\n## scripts\n- pre-request => http request => tests\n- console.logは左下のconsoleから\n\n## test\n- chai: https://www.chaijs.com/api/bdd/\n\n## Newman (CLI collection runner)\n```\nnpm install -g newman\n```\n\n## body\n- ctrl + bで整形\n\n## params\n- valueはmouse overで [bar bar] => bar%20barとencodeできる\n\n## create a request\n- https://hookbin.com/\n- api => 上記reloadで結果が出る\n\n## post from import\nchrome F12 => network => right click menu => copy as cURL => import(raw text)\n\n\n## trello api\ne1db2ccbcacff83f8c55e4652d7ed926\ntokenはtrelloのサイトでgenerate\nhttps://trello.com/app-key\n\nboard作成\nhttps://developer.atlassian.com/cloud/trello/rest/api-group-boards/#api-boards-post",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "basics",
+			"item": [
+				{
+					"name": "params & URL",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://httpbin.org/get?myparameter=1&myparameter2=whatever&myparameter3=cool",
+							"protocol": "https",
+							"host": [
+								"httpbin",
+								"org"
+							],
+							"path": [
+								"get"
+							],
+							"query": [
+								{
+									"key": "myparameter",
+									"value": "1"
+								},
+								{
+									"key": "myparameter2",
+									"value": "whatever"
+								},
+								{
+									"key": "myparameter3",
+									"value": "cool"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create random string & setting response body to global variable",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let response = pm.response.json();\r",
+									"pm.globals.set(\"uuid\", response.uuid);\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://httpbin.org/uuid",
+							"protocol": "https",
+							"host": [
+								"httpbin",
+								"org"
+							],
+							"path": [
+								"uuid"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "post with global variable from other get api & Tests(status)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\":\"John\",\r\n    \"email\": \"john@example.com\",\r\n    \"id\": \"{{uuid}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://httpbin.org/post",
+							"protocol": "https",
+							"host": [
+								"httpbin",
+								"org"
+							],
+							"path": [
+								"post"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Hookbin",
+			"item": [
+				{
+					"name": "basics",
+					"item": [
+						{
+							"name": "params & URL",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": null
+							},
+							"response": []
+						},
+						{
+							"name": "path variables",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": null
+							},
+							"response": []
+						},
+						{
+							"name": "post",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://hookb.in/2qJ8Ng2e3ji9BBKG1naw",
+									"protocol": "https",
+									"host": [
+										"hookb",
+										"in"
+									],
+									"path": [
+										"2qJ8Ng2e3ji9BBKG1naw"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Request1",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"var companies = pm.environment.get(\"companies\");\r",
+									"\r",
+									"if(!pm.environment.get(\"companies\")) {\r",
+									"  companies = [\"google\", \"Yahoo\", \"Facebook\", \"Amazon\"];\r",
+									"}\r",
+									"\r",
+									"// 最初の要素を削除\r",
+									"const currentCompany = companies.shift();\r",
+									"pm.environment.set(\"company\", currentCompany);\r",
+									"pm.environment.set(\"companies\", companies);"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var companies = pm.environment.get(\"companies\");\r",
+									"\r",
+									"if(companies && companies.length > 0) {\r",
+									"  postman.setNextRequest(\"Request1\");\r",
+									"} else {\r",
+									"  postman.setNextRequest(null);\r",
+									"}\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": {{company}}\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://hookb.in/wNBYR6d2wMIz88VDlZyG",
+							"protocol": "https",
+							"host": [
+								"hookb",
+								"in"
+							],
+							"path": [
+								"wNBYR6d2wMIz88VDlZyG"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "# memo\n\n- 環境変数を使って、配列をshiftしていき要素の数だけrequestをループさせていく\n\n- post結果はhookbinサイト上で確認\n※エンドポイントは使うときのもの。変わるので確認\n```\ncompanies = [\"google\", \"Yahoo\", \"Facebook\", \"Amazon\"];\n```"
+		},
+		{
+			"name": "import post",
+			"item": [
+				{
+					"name": "import post request from trello F12 network cards",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "authority",
+								"value": "trello.com"
+							},
+							{
+								"key": "sec-ch-ua",
+								"value": "\" Not A;Brand\";v=\"99\", \"Chromium\";v=\"90\", \"Microsoft Edge\";v=\"90\""
+							},
+							{
+								"key": "x-trello-client-version",
+								"value": "build-7809"
+							},
+							{
+								"key": "x-trello-traceid",
+								"value": "60a91384c2f8c1b63aee115ae0c7f49c"
+							},
+							{
+								"key": "sec-ch-ua-mobile",
+								"value": "?0"
+							},
+							{
+								"key": "user-agent",
+								"value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36 Edg/90.0.818.62"
+							},
+							{
+								"key": "content-type",
+								"value": "application/json"
+							},
+							{
+								"key": "accept",
+								"value": "application/json, text/javascript, */*; q=0.01"
+							},
+							{
+								"key": "x-requested-with",
+								"value": "XMLHttpRequest"
+							},
+							{
+								"key": "origin",
+								"value": "https://trello.com"
+							},
+							{
+								"key": "sec-fetch-site",
+								"value": "same-origin"
+							},
+							{
+								"key": "sec-fetch-mode",
+								"value": "cors"
+							},
+							{
+								"key": "sec-fetch-dest",
+								"value": "empty"
+							},
+							{
+								"key": "referer",
+								"value": "https://trello.com/b/rNRkhfFA/postman-test"
+							},
+							{
+								"key": "accept-language",
+								"value": "ja,en-US;q=0.9,en;q=0.8,en-GB;q=0.7"
+							},
+							{
+								"key": "cookie",
+								"value": "dsc=0cdaca8786ee948c555f442d6154b557afffa2bbb0a3ed1295418987b6d1ec5f; lang=ja; gdpr-cookie-consent=accepted; ajs_group_id=null; ajs_anonymous_id=%22880c0c22-146a-4b44-8c5a-2dd91ec43d20%22; _gcl_au=1.1.405944555.1621679070; _biz_uid=e1bfd31838e3495aac56c2cb996455cd; _biz_nA=1; _biz_pendingA=%5B%5D; _biz_flagsA=%7B%22Version%22%3A1%2C%22ViewThrough%22%3A%221%22%2C%22XDomain%22%3A%221%22%7D; BP_GTM_FPC=a43bcd18-1bf5-4f8f-bdff-8e9574bbeacf; __cid=OjoDj0bjAjDpeA6uZRofbNN852M9l1iIxd2hmNLewPnYjI0fRtiSnNbxsq3O4qDfGtzlnDUTO_eR35k15gf1nvm4KdWppsP0qr2FrejsirCRtcT8qavZuIiIiqn28pqj5ovD9vDokbi-6p6x5p3a6Kq5_f2kl8Ps6emZr-jvnLjul-LMi5CGuKq1wf3mm8_7rbODuIW02PeruYWh9vKatvLomajo7puq5o_L_qeuw7fz75229eqK3aK7haH28pq2_u2StvDuxpCg656r9uySr7HfrRJG_N2Yxtyq1MbcqpjG3Opn; token=60a8dc0ca6d93567b3366b48%2F9eS2e2VBorp7W4e2B1LQDPUFDY9JZeKMrWgkv3Jg9LQQhvylWiSnwziGy3iB7bc3; hasAccount=atlassian; loggedIn=1; preAuthProps=s%3A60a8dc0ca6d93567b3366b48%3AisEnterpriseAdmin%3Dfalse.nOJ6mTMbU%2BrSPJlkFInqALzOcYq%2F1difaA3YBOKejpk; G_ENABLED_IDPS=google; _uetsid=e4729b60bae711ebabbe7de0b6ae4ac3; _uetvid=e472be60bae711eb91cb3bbc8f26dc4d; mab=60a8dc0ca6d93567b3366b48; _sp_id.dc4d=b29a974c-7edd-4082-a51f-5ddef7bb2699.1621679070.2.1621693313.1621679193.e242da82-0ae2-417e-9a5f-d1cc8ec03e07; _sp_ses.dc4d=*"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"name\":\"abcdefffff\",\"closed\":false,\"idLabels\":[],\"idMembers\":[],\"dateLastActivity\":1621693316352,\"pos\":65535,\"cardRole\":null,\"idBoard\":\"60a8dc3cbe5a155690b9d859\",\"idList\":\"60a8dc3cbe5a155690b9d85b\",\"token\":\"60a8dc0ca6d93567b3366b48/9eS2e2VBorp7W4e2B1LQDPUFDY9JZeKMrWgkv3Jg9LQQhvylWiSnwziGy3iB7bc3\"}"
+						},
+						"url": {
+							"raw": "https://trello.com/1/cards",
+							"protocol": "https",
+							"host": [
+								"trello",
+								"com"
+							],
+							"path": [
+								"1",
+								"cards"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "trello api & scripts & tests",
+			"item": [
+				{
+					"name": "create a new board & token from environment",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": null
+					},
+					"response": []
+				},
+				{
+					"name": "put with path params",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": null
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "example scripts & environment",
+			"item": [
+				{
+					"name": "set environment",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": null
+					},
+					"response": []
+				},
+				{
+					"name": "url dev-prod",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": null
+					},
+					"response": []
+				},
+				{
+					"name": "tests",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": null
+					},
+					"response": []
+				},
+				{
+					"name": "for loop & if",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": null
+					},
+					"response": []
+				},
+				{
+					"name": "nested assertions",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": null
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
