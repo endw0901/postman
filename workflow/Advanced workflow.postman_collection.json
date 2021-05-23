@@ -1,0 +1,259 @@
+{
+	"info": {
+		"_postman_id": "d3141a90-2508-4307-8baf-739f7dbba233",
+		"name": "Advanced workflow",
+		"description": "# workflow制御\n\n- router scriptはcollection folderにある\n- run collectionの画面でrouter.jsonのデータをselectして実行\n\n- https://www.youtube.com/watch?v=FWYKOR0Zj28\n- https://github.com/vdespa/postman-advanced-workflow-example\n```\n[\n    {\n        \"routes\": [\n            \"Request 1\",\n            \"Request 2\",\n            \"Request 3\",\n            \"Request 4\"\n        ]\n    },\n    {\n        \"routes\": [\n            \"Request 1\",\n            \"Request 2\",\n            \"Request 3\",\n            \"Request 5\"\n        ]\n    },\n    {\n        \"routes\": [\n            \"Request 1\",\n            \"Request 3\",\n            \"Request 2\",\n            \"Request 6\"\n        ]\n    }\n]\n```",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Request 1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "httpbin.org/get?request=1",
+					"host": [
+						"httpbin",
+						"org"
+					],
+					"path": [
+						"get"
+					],
+					"query": [
+						{
+							"key": "request",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Request 2",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "httpbin.org/get?request=2",
+					"host": [
+						"httpbin",
+						"org"
+					],
+					"path": [
+						"get"
+					],
+					"query": [
+						{
+							"key": "request",
+							"value": "2"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Request 3",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "httpbin.org/get?request=3",
+					"host": [
+						"httpbin",
+						"org"
+					],
+					"path": [
+						"get"
+					],
+					"query": [
+						{
+							"key": "request",
+							"value": "3"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Request 4",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "httpbin.org/get?request=4",
+					"host": [
+						"httpbin",
+						"org"
+					],
+					"path": [
+						"get"
+					],
+					"query": [
+						{
+							"key": "request",
+							"value": "4"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Request 5",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "httpbin.org/get?request=5",
+					"host": [
+						"httpbin",
+						"org"
+					],
+					"path": [
+						"get"
+					],
+					"query": [
+						{
+							"key": "request",
+							"value": "5"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Request 6",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "httpbin.org/get?request=6",
+					"host": [
+						"httpbin",
+						"org"
+					],
+					"path": [
+						"get"
+					],
+					"query": [
+						{
+							"key": "request",
+							"value": "6"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"postman.setNextRequest(getNextRequest());",
+					"",
+					"function getNextRequest() {",
+					"    let routes;",
+					"    if (Array.isArray(pm.globals.get(\"remainingRoutes\")) === true) {",
+					"        routes = pm.globals.get(\"remainingRoutes\");",
+					"    } else {",
+					"        routes = pm.iterationData.get(\"routes\");",
+					"    }",
+					"    ",
+					"    const nextRequest = routes.shift();",
+					"    pm.globals.set(\"remainingRoutes\", routes);",
+					"    ",
+					"    if (nextRequest === undefined) {",
+					"        pm.globals.clear(\"remainingRoutes\");",
+					"        return null;",
+					"    }",
+					"    ",
+					"    return nextRequest;",
+					"}"
+				]
+			}
+		}
+	]
+}
