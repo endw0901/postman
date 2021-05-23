@@ -1,5 +1,7 @@
 # test for loop
 
+- https://github.com/endw0901/postman/tree/main/scripts_variables
+- exapmle scripts & environment
 
 ```
 //-----------------
