@@ -20,7 +20,7 @@ pm.variables.get('url')
 ## test
 - chai: https://www.chaijs.com/api/bdd/
 
-## Newman (CLI collection runner)
+## [Newman (CLI collection runner)](https://github.com/endw0901/postman/tree/main/newman)
 ```
 npm install -g newman
 ```
