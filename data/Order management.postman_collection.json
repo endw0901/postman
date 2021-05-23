@@ -1,0 +1,158 @@
+{
+	"info": {
+		"_postman_id": "a89a6425-f155-4f9d-8456-265a0a7bf6f4",
+		"name": "Order management",
+		"description": "# data\n\n- collection runnerでdataをselectして実行\n- scriptの中ではiterationDataで参照可能\n\n```\npm.iterationData.get(\"customerId\")\n```\n\n- global > collection > environment > data > local\n\n- 外部dataのmetaInfoをjsonオブジェクトとして変数にしてから格納 \"metaInfo\" : {{metaInfo}}\n\ndata\n```\n[\n    {\n        \"customerId\": 9000,\n        \"productId\": 5,\n        \"status\": 200,\n        \"isValid\": \"true\",\n        \"expectedStatus\": 200,\n        \"metaInfo\": {\n            \"categoryId\": 9347,\n            \"segmentId\": 7833,\n            \"keywords\": \"foo, bar, foobar\"\n        }\n    },\n    {\n        \"customerId\": 9001,\n        \"productId\": 4,\n        \"status\": 500,\n        \"isValid\": \"true\",\n        \"expectedStatus\": 500,\n        \"metaInfo\": null\n    },\n    {\n        \"customerId\": 9002,\n        \"productId\": \"3FOO\",\n        \"isValid\": \"false\",\n        \"status\": 404,\n        \"expectedStatus\": 404,\n        \"metaInfo\": {\n            \"categoryId\": 1111,\n            \"segmentId\": 2222,\n            \"keywords\": \"foo, bar, foobar\"\n        }\n    }\n]\n```",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Generate reference",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const response = pm.response.json();",
+							"",
+							"",
+							"pm.test(\"Should contain reference id\", function () {",
+							"    pm.expect(response.uuid).to.exist;",
+							"});",
+							"",
+							"pm.globals.set(\"referenceId\", response.uuid);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "httpbin.org/uuid",
+					"host": [
+						"httpbin",
+						"org"
+					],
+					"path": [
+						"uuid"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create order",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const response = pm.response.json();",
+							"",
+							"if(pm.iterationData.get(\"isValid\") == 'true') {",
+							"  pm.test(\"Should contain the customer id\", function () {",
+							"      pm.expect(response.json.customerId).to.eql(pm.iterationData.get(\"customerId\"));",
+							"  });",
+							"",
+							"  pm.test(\"Should contain the product id\", function () {",
+							"      pm.expect(response.json.productId).to.eql(pm.iterationData.get(\"productId\"));",
+							"  });",
+							"",
+							"  pm.test(\"Should contain the reference id\", function () {",
+							"      pm.expect(response.json.referenceId).to.eql(pm.globals.get(\"referenceId\"));",
+							"  });",
+							"",
+							"} else {",
+							"  pm.test(\"should not be valid\", function () {",
+							"      pm.expect(response.json).to.be.null;",
+							"  })",
+							"}",
+							"",
+							"",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// 外部dataのmetaInfoをjsonオブジェクトとして変数にしてから格納 \"metaInfo\" : {{metaInfo}}\r",
+							"pm.variables.set('metaInfo', JSON.stringify(pm.iterationData.get('metaInfo')));"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"referenceId\": \"{{referenceId}}\",\n\t\"customerId\": {{customerId}},\n\t\"productId\": {{productId}},\n  \"metaInfo\" : {{metaInfo}}\n}"
+				},
+				"url": {
+					"raw": "httpbin.org/post",
+					"host": [
+						"httpbin",
+						"org"
+					],
+					"path": [
+						"post"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Check status",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is \" + pm.iterationData.get('expectedStatus'), function () {",
+							"    pm.response.to.have.status(pm.iterationData.get('expectedStatus'));",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "httpbin.org/status/{{status}}",
+					"host": [
+						"httpbin",
+						"org"
+					],
+					"path": [
+						"status",
+						"{{status}}"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
