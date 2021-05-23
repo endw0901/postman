@@ -1,4 +1,7 @@
 # newman
+- CLIツール
+- postman apiで自分のcollectionやenvironmentをcliで取得し、コマンドラインで実行できる
+
 - [postman公式](https://learning.postman.com/docs/running-collections/using-newman-cli/command-line-integration-with-newman/)
 
 - [newman公式](https://github.com/postmanlabs/newman)
