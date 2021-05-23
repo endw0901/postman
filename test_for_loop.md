@@ -20,3 +20,32 @@ for (let filter of jsonData.filters) {
   }
 }
 ```
+
+## nested assertion
+
+```
+const jsonData = pm.response.json();
+
+// console.log(typeof jsonData.prefs);
+// console.log(jsonData.prefs.comments.status);
+
+const commentsStatus = jsonData.prefs.comments.status;
+
+pm.test("comment should be disabled", function() {
+  pm.expect(commentsStatus).to.eql("disabled");
+})
+
+const boardStatus = jsonData.limits['54bba24af6196bd5f824e563'].boards.totalPerMember.status;
+
+for (let key in jsonData.limits) {
+  // console.log(key,jsonData.limits[key]);
+  if (jsonData.limits[key].hasOwnProperty('boards')) {
+    boardStatus = jsonData.limits[key].boards.totalPerMember.status;
+  }
+}
+
+pm.test("boards should be ok", function() {
+  pm.expect(boardStatus).to.eql("ok");
+})
+
+```
