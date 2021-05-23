@@ -11,7 +11,49 @@ pm.iterationData.get("customerId")
 
 - 外部dataのmetaInfoをjsonオブジェクトとして変数にしてから格納 "metaInfo" : {{metaInfo}}
 
-data
+## sample
+
+```
+// pre request scripts
+// 外部dataのmetaInfoをjsonオブジェクトとして変数にしてから格納 "metaInfo" : {{metaInfo}}
+pm.variables.set('metaInfo', JSON.stringify(pm.iterationData.get('metaInfo')));
+
+// body
+{
+	"referenceId": "{{referenceId}}",
+	"customerId": {{customerId}},
+	"productId": {{productId}},
+  "metaInfo" : {{metaInfo}}
+}
+
+// tests
+const response = pm.response.json();
+
+if(pm.iterationData.get("isValid") == 'true') {
+  pm.test("Should contain the customer id", function () {
+      pm.expect(response.json.customerId).to.eql(pm.iterationData.get("customerId"));
+  });
+
+  pm.test("Should contain the product id", function () {
+      pm.expect(response.json.productId).to.eql(pm.iterationData.get("productId"));
+  });
+
+  pm.test("Should contain the reference id", function () {
+      pm.expect(response.json.referenceId).to.eql(pm.globals.get("referenceId"));
+  });
+
+} else {
+  pm.test("should not be valid", function () {
+      pm.expect(response.json).to.be.null;
+  })
+}
+
+
+
+
+```
+
+## data
 ```
 [
     {
