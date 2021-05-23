@@ -36,8 +36,8 @@ npm install -g newman
 - api => 上記reloadで結果が出る
 
 ## post from import
-chrome F12 => network => right click menu => copy as cURL => import(raw text)
-
+- chrome F12 => network => right click menu => copy as cURL => import(raw text)
+- [外部dataを使ってcollection runner](https://github.com/endw0901/postman/tree/main/data)
 
 ## trello api
 e1db2ccbcacff83f8c55e4652d7ed926
