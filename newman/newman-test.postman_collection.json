@@ -1,0 +1,216 @@
+{
+	"info": {
+		"_postman_id": "91dd77a4-9169-4f8d-b1f3-b65c0ae5f555",
+		"name": "newman-test",
+		"description": "# memo\n- [postman公式](https://learning.postman.com/docs/running-collections/using-newman-cli/command-line-integration-with-newman/)\n\n- [newman公式](https://github.com/postmanlabs/newman)\n⇒ Using Newman with the Postman API\n\n## start\n- share collection => get link\n\n```\n// cli実行\nnewman run (上記リンク)\n\nnewman run (url) -e xxx_environment.json\n\n例）\nnewman run https://www.getpostman.com/collections/08efa59cd7939bb82655 -e C:\\Users\\xxxxxxx\\Downloads\\httpbin-postman-tests-master\\httpbin-postman-tests-master\\production.postman_environment.json\n```\n\n## postman api\n- [newman公式](https://github.com/postmanlabs/newman)\n⇒ Using Newman with the Postman API\n=> explore => postman api探す => get api key\n\nkeyname:cxmas-postman\nkey:\nC:\\Users\\cxmas\\key\\postmankey\n\n\n```\n2 Fetch a list of your collections from: https://api.getpostman.com/collections?apikey=$apiKey\n\n3 Get the collection link via it's uid: https://api.getpostman.com/collections/$uid?apikey=$apiKey\n\n4 Obtain the environment URI from: https://api.getpostman.com/environments?apikey=$apiKey\n\n5 Using the collection and environment URIs acquired in steps 3 and 4, run the collection as follows:\n\n$ newman run \"https://api.getpostman.com/collections/$uid?apikey=$apiKey\" \\\n```\n例）\n上記の2、3で自分のapi-collectionからuidでnewman-test collectionを特定し、api-keyとnewman-testのenvironmentでnewman cliから実行\n\n※environmentはこの例ではローカルのjsonから取得しているが、上記4でenvironment URIを取得も可能\n\n```\nnewman run https://api.getpostman.com/collections/{{uid}}?apikey={{api-key}} -e C:\\Users\\{{username}}\\Downloads\\httpbin-postman-tests-master\\httpbin-postman-tests-master\\production.postman_environment.json\n```\n\n## run newman with docker\n- https://github.com/postmanlabs/newman-docker",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "GET with URL Params",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"",
+							"let jsonData = pm.response.json();",
+							"",
+							"pm.test(\"Your test name\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    pm.expect(jsonData.args.isGood).to.eql('true');",
+							"    pm.expect(jsonData.args.isBad).to.eql('false');",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/get?isGood=true&isBad=false",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"get"
+					],
+					"query": [
+						{
+							"key": "isGood",
+							"value": "true"
+						},
+						{
+							"key": "isBad",
+							"value": "false"
+						}
+					]
+				},
+				"description": "Simple GET request with URL Parameters"
+			},
+			"response": []
+		},
+		{
+			"name": "POST with JSON body",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						]
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"let date = Date.now();",
+							"",
+							"pm.globals.set(\"currentDate\", date);"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"john\",\n    \"permissions\": [2000,3000,4000]\n}"
+				},
+				"url": {
+					"raw": "http://httpbin.org/post",
+					"protocol": "http",
+					"host": [
+						"httpbin",
+						"org"
+					],
+					"path": [
+						"post"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PUT with form data",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Test form data\", function () {",
+							"    let data = pm.response.json();",
+							"    pm.expect(data.form.username).to.eql(\"johndoe\");",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "username",
+							"value": "johndoe",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://httpbin.org/put",
+					"protocol": "http",
+					"host": [
+						"httpbin",
+						"org"
+					],
+					"path": [
+						"put"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DELETE request",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://httpbin.org/delete",
+					"protocol": "http",
+					"host": [
+						"httpbin",
+						"org"
+					],
+					"path": [
+						"delete"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
