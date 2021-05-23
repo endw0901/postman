@@ -1,5 +1,8 @@
 # test
 
+- https://github.com/endw0901/postman/tree/main/scripts_variables
+- exapmle scripts & environment
+
 ```
 // environmentでわける
 if (pm.environment.get("environment") === 'prod') {
