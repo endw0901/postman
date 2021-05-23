@@ -2,6 +2,8 @@
 - collectionメニューからrun collection
 - →結果の各行をクリックでbodyなどを見れる
 
+- [postman公式ドキュメント](https://learning.postman.com/docs/writing-scripts/intro-to-scripts/)
+
 ## 変数・environment
 - global < environment < data < local が優先（同じkey名のとき)
 ※dataはrunnerでiteration使うときだけ
